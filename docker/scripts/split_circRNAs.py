@@ -33,12 +33,13 @@ for circRNA in input_file:
 	chrom = circRNA.split()[0]
 	start = str(circRNA.split()[1])
 	end = str(circRNA.split()[2])
-	circ_str = chrom + '\t' + start + '\t' + end 
+	strand = str(circRNA.split()[3])
+	circ_str = chrom + '\t' + start + '\t' + end
 
 	all_circ.append(chrom + ":" + start + "-" + end)
 
 	ind_circ_file = open(ID_str + ".bed", "w")
-	ind_circ_file.write(circ_str + '\t' + ID_str + '\n')
+	ind_circ_file.write(circ_str + '\t' + ID_str + '\t' + strand + '\n')
 	ind_circ_file.close()
 
 	all_circ_file.write(ID_str + '\t' + circ_str + '\n')

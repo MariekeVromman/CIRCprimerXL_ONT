@@ -28,7 +28,7 @@ WORKDIR /bin
 
 RUN python3 -m pip install -U nupack -f ./nupack-4.0.0.23/package
 RUN python3 -m pip install -U pytest
-RUN python3 -m pytest -v
+# RUN python3 -m pytest -v
 
 
 # install primer3 version 2.5.0
@@ -66,4 +66,4 @@ WORKDIR /
 
 # install python scripts
 ADD scripts /usr/bin
-RUN chmod +x /usr/bin/get_sec_str_temp.py /usr/bin/get_sec_str_amp.py /usr/bin/filter.py /usr/bin/split_primers.py /usr/bin/split_circRNAs.py /usr/bin/gather_output.py /usr/bin/get_SNPs.py /usr/bin/upfront_filter.py /usr/bin/validate_bed.py /usr/bin/summary_run.py /usr/bin/get_circ_seq_fastahack2.py usr/bin/get_circ_seq_fastahack1.py /usr/bin/gtf_to_bed.py /usr/bin/generate_ENST_list.py
+RUN chmod +x /usr/bin/split_primers.py /usr/bin/split_circRNAs.py /usr/bin/gather_output.py /usr/bin/validate_bed.py /usr/bin/get_circ_seq.py /usr/bin/filter.py
