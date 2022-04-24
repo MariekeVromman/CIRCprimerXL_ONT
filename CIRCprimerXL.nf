@@ -20,10 +20,13 @@ params.amp_min = 50
 params.amp_max = 0 // this param is set to 0, so that it can be adjusted depending on temp_l if the user does not supply amp_max
 params.temp_l = 150
 
+params.exons = "$baseDir/docker/Homo_sapiens.GRCh38.103.exons.sorted.bed"
+
 
 // required parameters
 input_bed = file(params.input_bed)
 chrom_file = file(params.chrom_file)
+exons = file(params.exons)
 
 // print run info
 
@@ -86,6 +89,7 @@ process get_primers {
 	val 'temp_l_handle' from params.temp_l
 	path 'primer_settings_handle' from params.primer_settings
 	path 'in_filter_handle' from in_filter
+	file 'exons_bed' from exons
  
 	output:
 	path 'all_primers_circ*' into all_primers_per_circ
@@ -96,6 +100,8 @@ process get_primers {
 	"""
 	/bin/primer3-2.5.0/src/primer3_core --output=output_primer3.txt --p3_settings_file=$primer_settings_handle $in_primer3_handle
 	split_primers.py -i output_primer3.txt
+	bedtools sort -i bed_in.txt > bed_in_sorted.txt
+	bedtools closest -d -t first -a bed_in_sorted.txt -b $exons_bed > out_anno.txt
 	mkdir all_primers
 	filter.py -A in_filter_handle -P all_primers_circ*.txt -l $temp_l_handle
 	gather_output.py -i all_primers/filtered_primers_*
@@ -119,7 +125,7 @@ process print_output {
 	"""
 	mkdir all_primers
 	cp all_primer_files*/* all_primers/
-	echo "circ_ID	chr	start	end	primer_ID	FWD_primer	FWD_rc	REV_primer	REV_rc	FWD_pos	FWD_length	REV_pos	REV_length	FWD_Tm	REV_Tm	FWD_GC	REV_GC	amplicon	PASS	start_annotation	end_annotation	splicing" > filtered_primers.txt
+	echo "circ_ID	chr	start	end	primer_ID	FWD_primer	FWD_rc	REV_primer	REV_rc	FWD_pos	FWD_length	REV_pos	REV_length	FWD_Tm	REV_Tm	FWD_GC	REV_GC	amplicon	PASS	FWD_type	FWD_exon	REV_type	REV_exon	same	PASS" > filtered_primers.txt
 	cat results_per_circ* >> filtered_primers.txt
 	"""
 }

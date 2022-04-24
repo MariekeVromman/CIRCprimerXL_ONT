@@ -30,7 +30,7 @@ for line in primer_in:
 
 template = primers["SEQUENCE_TEMPLATE"]
 circRNA = primers["SEQUENCE_ID"]
-circ_ID, chrom, start, end = circRNA.split("_")
+circ_ID, chrom, start, end, strand = circRNA.split("_")
 nr_p_out = primers["PRIMER_LEFT_NUM_RETURNED"]
 
 primer_in.close()
@@ -56,6 +56,8 @@ general_info.close()
 all_primers = open("all_primers_" + circ_ID + ".txt", 'w')
 all_primers_dict = {}
 
+bed_in = open('bed_in.txt', 'w')
+
 
 for primer_index in range(int(nr_p_out)):
 
@@ -74,25 +76,17 @@ for primer_index in range(int(nr_p_out)):
 	FWD_RC = rev_comp(FWD)
 	REV_RC = rev_comp(REV)
 
+	# make file for bedtools anno
+	bed_in.write(chrom + "\t" + str(int(start)+30+int(FWD_pos)) + "\t" + str(int(start)+30+int(FWD_pos)+int(FWD_len)) + '\t'+ str(primer_index) + '_F' + '\t' + strand +'\n')
+	bed_in.write(chrom + "\t" + str(int(start)+30+int(REV_pos)-int(REV_len)) + "\t" + str(int(start)+30+int(REV_pos)) + '\t'+ str(primer_index) + '_R' + '\t' + strand + '\n')
+
+
 	# general primer file (for filtering), first put in dict, will be sorted (see below)
 	all_primers_dict[circ_ID + "\t" + chrom + "\t" + start + "\t" + end + '\t' + str(primer_index) + '\t' + FWD + '\t' + FWD_RC + '\t' + REV + '\t' + 
 	REV_RC + '\t' + FWD_pos + '\t' + FWD_len + '\t' + REV_pos +'\t' + REV_len + '\t' + PRIMER_LEFT_TM + '\t' + PRIMER_RIGHT_TM + '\t' + 
 	PRIMER_LEFT_GC_PERCENT + '\t' + PRIMER_RIGHT_GC_PERCENT + '\t' + amplicon + '\t' + 'PASS' + '\n'] = len(amplicon)
 
 
-	# make file for bedtools anno
-	bed_in_f = open('bed_in.txt', 'w')
-	bed_in_f.write()
-	bed_in_obj_f = BedTool('bed_in.txt')
-	bed_out_f = bed_in.closest('/Users/mariekevromman/Documents/PhD/primer_tool_dev/CIRCprimerXL_ONT/Homo_sapiens.GRCh38.103.exons.sorted.bed', s=True, d=True)
-	#exon_info = read_tsv('out.bed', col_names = c('chr', 'start', 'end', 'name', 'strand', 'chr_exon', 'start_exon', 'end_exon', 'ensembl', 'score', 'strand_exon', 'nt_to_exon'))
-
-	info = bed_out.readline()
-	ensembl = info[8]
-	nt_to_exon = info[11]
-	genome_type = 'exonic'
-	if nt_to_exon > 0:
-		genome_type = 'intronic'
 
 # sort primers according to amp size (smallest is best) and then print to all_primers
 all_primers_sorted = {k: v for k, v in sorted(all_primers_dict.items(), key=lambda item: item[1])}
@@ -102,6 +96,7 @@ for primer in all_primers_sorted:
 
 
 all_primers.close()
+bed_in.close()
 
 
 

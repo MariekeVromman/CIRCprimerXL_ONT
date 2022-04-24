@@ -67,3 +67,4 @@ WORKDIR /
 # install python scripts
 ADD scripts /usr/bin
 RUN chmod +x /usr/bin/split_primers.py /usr/bin/split_circRNAs.py /usr/bin/gather_output.py /usr/bin/validate_bed.py /usr/bin/get_circ_seq.py /usr/bin/filter.py
+WORKDIR /

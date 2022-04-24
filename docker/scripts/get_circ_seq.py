@@ -81,7 +81,7 @@ sequence = str(record_right.seq)
 # ## make a txt file for primer design (sequence based)
 
 output = open("input_primer3_" + circ_ID + ".txt", "w")
-output.write("SEQUENCE_ID=" + circ_ID + "_" + chrom + "_" + str(start-1) + "_" + str(end) + "\n")
+output.write("SEQUENCE_ID=" + circ_ID + "_" + chrom + "_" + str(start-1) + "_" + str(end) + '_' + circ_strand + "\n")
 output.write("SEQUENCE_TEMPLATE=" + sequence + "\n")
 output.write("SEQUENCE_TARGET=" + str(30) + ",1\nPRIMER_NUM_RETURN=" + nr + "\n")
 output.write("PRIMER_MIN_LEFT_THREE_PRIME_DISTANCE=" + diff + '\n')
