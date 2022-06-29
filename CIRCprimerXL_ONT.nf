@@ -63,6 +63,7 @@ process split_circRNAs {
 
 
 process get_seq {
+	maxForks 1
 	input:
 	file ind_circ_file_handle from ind_circ_file.flatten()
 	val 'diff' from params.primer3_diff
@@ -74,7 +75,7 @@ process get_seq {
 	path 'input_filter*' into in_filter
 
 	"""
-	get_circ_seq.py -n $length -i $ind_circ_file_handle -d $diff -p $nr -m 'marieke.vromman@ugent.be'
+	get_circ_seq.py -n $length -i $ind_circ_file_handle -h $diff -p $nr -m 'marieke.vromman@ugent.be' -a $params.min_tm -b $params.max_tm -c $params.opt_tm -d $params.diff_tm -e $params.min_gc -f $params.max_gc -g $params.opt_gc -j $params.amp_min -k $params.amp_max
 	"""
 }
 
