@@ -17,7 +17,7 @@ params.min_gc = 40
 params.max_gc = 80
 params.opt_gc = 50
 params.amp_min = 50
-params.amp_max = 0 // this param is set to 0, so that it can be adjusted depending on temp_l if the user does not supply amp_max
+params.amp_max = 1000 // this param is set to 0, so that it can be adjusted depending on temp_l if the user does not supply amp_max
 params.temp_l = 150
 
 params.exons = "$baseDir/docker/Homo_sapiens.GRCh38.103.exons.sorted.bed"
@@ -75,7 +75,7 @@ process get_seq {
 	path 'input_filter*' into in_filter
 
 	"""
-	get_circ_seq.py -n $length -i $ind_circ_file_handle -h $diff -p $nr -m 'marieke.vromman@ugent.be' -a $params.min_tm -b $params.max_tm -c $params.opt_tm -d $params.diff_tm -e $params.min_gc -f $params.max_gc -g $params.opt_gc -j $params.amp_min -k $params.amp_max
+	get_circ_seq.py -n $length -i $ind_circ_file_handle -z $diff -p $nr -m 'marieke.vromman@ugent.be' -a $params.min_tm -b $params.max_tm -c $params.opt_tm -d $params.diff_tm -e $params.min_gc -f $params.max_gc -g $params.opt_gc -j $params.amp_min -k $params.amp_max
 	"""
 }
 

@@ -10,7 +10,7 @@ parser = argparse.ArgumentParser(description='give arguments to main primer_xc s
 parser.add_argument('-n', nargs=1, required=True, help='the nr of nucleotides surrounding the BSJ at each side', metavar='length')
 parser.add_argument('-i', nargs=1, required=True, help='input circRNA bed file, 0-based')
 parser.add_argument('-p', nargs=1, required=True, help='nr of primers')
-parser.add_argument('-h', nargs=1, required=True, help='nr of difference between primers')
+parser.add_argument('-z', nargs=1, required=True, help='nr of difference between primers')
 parser.add_argument('-m', nargs=1, required=True, help='mail address')
 
 parser.add_argument('-a', nargs=1, required=True, help='min TM')
@@ -27,7 +27,7 @@ args = parser.parse_args()
 length = int(args.n[0])
 input_bed = open(args.i[0])
 nr = args.p[0]
-diff = args.h[0]
+diff = args.z[0]
 mail = args.m[0]
 
 
@@ -95,7 +95,7 @@ output.write("SEQUENCE_ID=" + circ_ID + "_" + chrom + "_" + str(start-1) + "_" +
 output.write("SEQUENCE_TEMPLATE=" + sequence + "\n")
 output.write("SEQUENCE_TARGET=" + str(30) + ",1\nPRIMER_NUM_RETURN=" + nr + "\n")
 output.write("PRIMER_MIN_LEFT_THREE_PRIME_DISTANCE=" + diff + '\n')
-output.write("PRIMER_PRODUCT_SIZE_RANGE=" + args.j[0] + '-' + amp_max + '\n')
+output.write("PRIMER_PRODUCT_SIZE_RANGE=" + args.j[0] + '-' + args.k[0] + '\n')
 output.write("PRIMER_MIN_TM=" + args.a[0] + '\n')
 output.write("PRIMER_MAX_TM=" + args.b[0]+ '\n')
 output.write("PRIMER_OPT_TM=" + args.c[0]+ '\n')
