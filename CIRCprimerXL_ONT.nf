@@ -9,11 +9,11 @@ params.known_exons = "$baseDir/assets/GRCh38/known_exons_GRCh38.bed"
 
 params.primer3_diff = 1
 params.primer3_nr = 20
-params.min_tm = 58
-params.max_tm = 60
-params.opt_tm = 59
+params.min_tm = 60
+params.max_tm = 65
+params.opt_tm = 70
 params.diff_tm = 2
-params.min_gc = 30
+params.min_gc = 40
 params.max_gc = 80
 params.opt_gc = 50
 params.amp_min = 50
