@@ -31,7 +31,7 @@ diff = args.z[0]
 mail = args.m[0]
 
 
-# # retrieve circRNA BSJ sequence (200 bp from both sides) => based on GTF file?
+# # retrieve one side of BSJ (depending on strand info)
 
 # ## change chrom nr to GI from NCBI Revesion History GRCh38.p13 Primary Assembly
 chr_to_GI = {"chr1":"568815597","chr2":"568815596", "chr3":"568815595", "chr4": "568815594", "chr5":"568815593", 'chr6':"568815592", "chr7":"568815591", "chr8":'568815590', "chr9":"568815589", "chr10":"568815588", "chr11":"568815587", "chr12":"568815586", "chr13":"568815585", "chr14":"568815584", "chr15":"568815583", "chr16":"568815582", "chr17":"568815581", "chr18":"568815580", "chr19":"568815579", 'chr20':"568815578", "chr21":"568815577", "chr22":"568815576", "chrX":"568815575", "chrY":"568815574"}
