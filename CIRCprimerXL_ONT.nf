@@ -118,11 +118,13 @@ process print_output {
 	output:
 	path 'all_primers'
 	path 'filtered_primers.txt'
+	path 'run_summary.txt'
 
 	"""
 	mkdir all_primers
 	cp all_primer_files*/* all_primers/
 	echo "circ_ID	chr	start	end	strand	primer_ID	FWD_primer	FWD_rc	REV_primer	REV_rc	FWD_pos	FWD_length	REV_pos	REV_length	FWD_Tm	REV_Tm	FWD_GC	REV_GC	amplicon	FWD_type	REV_type	BSJ_type	same_primers	same_BSJ" > filtered_primers.txt
 	cat results_per_circ* >> filtered_primers.txt
+	make_summary.py
 	"""
 }

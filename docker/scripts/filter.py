@@ -53,6 +53,7 @@ primer_found = "no"
 if os.path.getsize(args.P[0]) == 0:
 	selected_primer.write(circ_ID + '\t' + chrom + '\t' + str(start) + '\t' + str(end) + '\t' + strand + "\tprimer3 was not able to design primers for this circRNA; try less strict settings\n")
 	primer_file.write(circ_ID + '\t' + chrom + '\t' + str(start) + '\t' + str(end) + '\t' + strand  + "\tprimer3 was not able to design primers for this circRNA; try less strict settings\n")
+	primer_found = 'yes' # this needs to be changed even if it's not true so that circ is not reported twice
 
 else: 
 	primer_n = 0
