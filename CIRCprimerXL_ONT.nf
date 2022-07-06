@@ -5,7 +5,8 @@
 params.primer_settings = "$baseDir/assets/primer3plus_settings.txt"
 params.chrom_file = "$baseDir/assets/GRCh38/chrom_sizes_GRCh38.txt"
 params.input_bed = "example/path"
-params.known_exons = "$baseDir/assets/GRCh38/known_exons_GRCh38.bed"
+params.exons = "$baseDir/assets/GRCh38/Homo_sapiens.GRCh38.103.exons.sorted.bed"
+
 
 params.primer3_diff = 1
 params.primer3_nr = 20
@@ -16,14 +17,12 @@ params.diff_tm = 2
 params.min_gc = 40
 params.max_gc = 80
 params.opt_gc = 50
-params.amp_min = 50
-params.amp_max = 1000 // this param is set to 0, so that it can be adjusted depending on temp_l if the user does not supply amp_max
-params.temp_l = 150
-
-params.exons = "$baseDir/docker/Homo_sapiens.GRCh38.103.exons.sorted.bed"
+params.amp_min = 40
+params.amp_max = 1000
+params.temp_l = 250
 
 
-// required parameters
+// change parameters to files
 input_bed = file(params.input_bed)
 chrom_file = file(params.chrom_file)
 exons = file(params.exons)
@@ -35,8 +34,8 @@ log.info """\
 CIRCprimerXL pipeline ONT
 ==============================================
 OncoRNALab - Marieke Vromman
-https://github.com/OncoRNALab/CIRCprimerXL
-https://hub.docker.com/repository/docker/oncornalab/CIRCprimerXL
+https://github.com/MariekeVromman/CIRCprimerXL_ONT
+https://hub.docker.com/repository/docker/oncornalab/circprimerxl_ont
 ==============================================
 your input file : ${params.input_bed}
 your output directory : ${params.output_dir}
