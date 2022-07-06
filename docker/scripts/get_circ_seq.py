@@ -49,17 +49,6 @@ circ_strand = circRNA.split()[4]
 # change chr nr to GI nr
 chrom_GI = chr_to_GI[chrom]
 
-# ## retrieve left side of BSJ
-#Entrez.email = mail
-#handle = Entrez.efetch(db="nucleotide", 
-#                       id=chrom_GI, 
-#                       rettype="fasta", 
-#                       strand=1, 
-#                       seq_start=end-length+1, 
-#                       seq_stop=end)
-#record_left = SeqIO.read(handle, "fasta")
-#handle.close()
-
 # ## retrieve right side of BSJ
 
 from Bio import Entrez, SeqIO
@@ -72,20 +61,22 @@ if circ_strand == "+":
                        strand=1, 
                        seq_start=start+30, 
                        seq_stop=start+length-1)
-else:
+elif circ_strand == '-':
     handle = Entrez.efetch(db="nucleotide", 
                        id=chrom_GI, 
                        rettype="fasta", 
                        strand=2, 
                        seq_start=end-30, 
                        seq_stop=end-length)
+else:
+    raise SystemExit('{0} is not a valid strand for circ {1}'.format(circ_strand, circRNA))
 
 
 record_right = SeqIO.read(handle, "fasta")
 handle.close()
 
 
-# ## paste both sides of BSJ together
+# ## change into string
 sequence = str(record_right.seq)
 
 # ## make a txt file for primer design (sequence based)
@@ -107,9 +98,9 @@ output.write("=\n")
 output.close()
 
 
-# ## make file for filtering
+# ## make file containing general circ info
 
-output = open("input_filter_" + circ_ID + ".bed", 'w')
+output = open("circ_info_" + circ_ID + ".bed", 'w')
 output.write(circRNA)
 output.close()
 

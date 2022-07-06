@@ -17,37 +17,33 @@ input_file.close()
 circ_nr = len(str(count_lines))
 circ_nr = "circ{:0" + str(circ_nr) +"d}"
 
-# also make a file containing all circs for the end
-all_circ_file = open('all_circ.txt', 'w')
-
-
 input_file = open(input_bed)
 
-all_circ = [] # to check if there are any doubles
+all_circ = [] # list with all circ to check if there are any doubles
 
 ID = 0
+
+# make a seperate input file for each circ
 for circRNA in input_file:
 
 	ID_str = circ_nr.format(ID)
 
+	# strand needs to be separated to generate bed file
 	chrom = circRNA.split()[0]
 	start = str(circRNA.split()[1])
 	end = str(circRNA.split()[2])
 	strand = str(circRNA.split()[3])
 	circ_str = chrom + '\t' + start + '\t' + end
 
-	all_circ.append(chrom + ":" + start + "-" + end)
-
+	# add to bed file
 	ind_circ_file = open(ID_str + ".bed", "w")
 	ind_circ_file.write(circ_str + '\t' + ID_str + '\t' + strand + '\n')
 	ind_circ_file.close()
-
-	all_circ_file.write(ID_str + '\t' + circ_str + '\n')
-
+	
+	# add to list to check for duplicates
+	all_circ.append(circRNA)
 	
 	ID += 1
-
-all_circ_file.close()
 
 def checkIfDuplicates(listOfElems):
     ''' Check if given list contains any duplicates '''

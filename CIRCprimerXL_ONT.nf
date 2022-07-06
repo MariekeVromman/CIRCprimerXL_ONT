@@ -51,7 +51,6 @@ process split_circRNAs {
 
 	output:
 	path 'circ*' into ind_circ_file
-	path 'all_circ.txt' into all_cic
 
 	"""
 	validate_bed.py -i $input_bed_handle -c $chrom_file_handle
@@ -62,7 +61,7 @@ process split_circRNAs {
 
 
 process get_seq {
-	maxForks 1
+	maxForks 5 // this parameter is necessary as Entrez Bio only allows a limited nr of request per mail address in th get_circ_seq.py script
 	input:
 	file ind_circ_file_handle from ind_circ_file.flatten()
 	val 'diff' from params.primer3_diff
@@ -71,7 +70,7 @@ process get_seq {
 
 	output:
 	path 'input_primer3*' into in_primer3
-	path 'input_filter*' into in_filter
+	path 'circ_info*' into circ_info
 
 	"""
 	get_circ_seq.py -n $length -i $ind_circ_file_handle -z $diff -p $nr -m 'marieke.vromman@ugent.be' -a $params.min_tm -b $params.max_tm -c $params.opt_tm -d $params.diff_tm -e $params.min_gc -f $params.max_gc -g $params.opt_gc -j $params.amp_min -k $params.amp_max
@@ -86,25 +85,25 @@ process get_primers {
 	
 	input:
 	path 'in_primer3_handle' from in_primer3
-	val 'temp_l_handle' from params.temp_l
 	path 'primer_settings_handle' from params.primer_settings
-	path 'in_filter_handle' from in_filter
+	path 'circ_info' from circ_info
 	file 'exons_bed' from exons
  
 	output:
 	path 'all_primers_circ*' into all_primers_per_circ
-	path 'output_primer3*'
 	path 'selected_primers_*' into results_per_circ
-	path('all_primers') into out_dir
+	path 'all_primers' into out_dir
+
+	// this file is copied to details directory
+	path 'output_primer3_*'
 
 	"""
 	/bin/primer3-2.5.0/src/primer3_core --output=output_primer3.txt --p3_settings_file=$primer_settings_handle $in_primer3_handle
 	split_primers.py -i output_primer3.txt
 	bedtools sort -i bed_in.txt > bed_in_sorted.txt
 	bedtools closest -d -t first -a bed_in_sorted.txt -b $exons_bed > out_anno.txt
-	mkdir all_primers
-	filter.py -A in_filter_handle -P all_primers_circ*.txt -l $temp_l_handle
-	gather_output.py -i all_primers/filtered_primers_*
+	mkdir all_primers 
+	filter.py -A circ_info -P all_primers_circ*.txt
 	"""
 }
 
@@ -115,8 +114,6 @@ process print_output {
 	input:
 	file 'results_per_circ*' from results_per_circ.collect()
 	path 'all_primer_files' from out_dir.collect()
-	path 'all_circ_file' from all_cic
-
 
 	output:
 	path 'all_primers'
@@ -125,7 +122,7 @@ process print_output {
 	"""
 	mkdir all_primers
 	cp all_primer_files*/* all_primers/
-	echo "circ_ID	chr	start	end	primer_ID	FWD_primer	FWD_rc	REV_primer	REV_rc	FWD_pos	FWD_length	REV_pos	REV_length	FWD_Tm	REV_Tm	FWD_GC	REV_GC	amplicon	PASS	FWD_type	FWD_exon	REV_type	REV_exon	same	PASS" > filtered_primers.txt
+	echo "circ_ID	chr	start	end	strand	primer_ID	FWD_primer	FWD_rc	REV_primer	REV_rc	FWD_pos	FWD_length	REV_pos	REV_length	FWD_Tm	REV_Tm	FWD_GC	REV_GC	amplicon	FWD_type	REV_type	BSJ_type	same_primers	same_BSJ" > filtered_primers.txt
 	cat results_per_circ* >> filtered_primers.txt
 	"""
 }

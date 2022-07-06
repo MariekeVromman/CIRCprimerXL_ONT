@@ -1,4 +1,5 @@
-# CIRCprimerXL
+# CIRCprimerXL_ONT
+read me needs to be updated for ONT primer design!
 Collaborators: Marieke Vromman, Pieter-Jan Volders
 
 Questions concerning the GitHub structure/scripts can be addressed to any of the collaborators.
