@@ -27,5 +27,5 @@ for circ in all_circ:
 nr_circ = len(all_circ_ls)
 
 summary = open('run_summary.txt', 'w')
-summary.write('in this run, primers were designed for {0} circRNAs\n\tfor {1} circRNAs primer could be designed\n\tfor {2} circRNAs no primers could be designed with the same FWD and REV exon annotation\n\tfor {3} circRNAs no primers could be designed by primer3'.format(nr_circ, primer_found, exon_fail, primer3_fail))
+summary.write('in this run, primers were designed for {0} circRNAs\n\tfor {1} circRNAs primers could be designed\n\tfor {2} circRNAs no primers could be designed with the same FWD and REV exon annotation\n\tfor {3} circRNAs no primers could be designed by primer3'.format(nr_circ, primer_found, exon_fail, primer3_fail))
 summary.close()
