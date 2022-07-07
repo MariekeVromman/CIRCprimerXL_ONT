@@ -26,7 +26,7 @@ anno = open('out_anno.txt', 'r')
 an_dict = {}
 an_dict_type = {}
 for line in anno:
-	an_type = line.split('\t')[9]
+	an_type = line.split('\t')[11] # this variable is 0 when the features overlap, or the distance between the features when they don't overlap
 	exon = line.split('\t')[8]
 	primer_id = line.split('\t')[3]
 	an_dict[primer_id] = exon
@@ -67,7 +67,7 @@ else:
 		if fw_type == '.':
 			fw_type = 'no_match'
 		else:
-			if int(fw_type) > 0:
+			if int(fw_type) > 0: # this variable is 0 when the features overlap, or the distance between the features when they don't overlap
 				fw_type = 'intronic/intergenic'
 			else:
 				fw_type = 'exonic' + '_' + an_dict[str(primer_n)+'_F']
@@ -75,7 +75,7 @@ else:
 		if rv_type == ".":
 			rv_type = 'no_match'
 		else:
-			if int(rv_type) > 0:
+			if int(rv_type) > 0: # this variable is 0 when the features overlap, or the distance between the features when they don't overlap
 				rv_type = 'intronic/intergenic'
 			else:
 				rv_type = 'exonic' + '_' + an_dict[str(primer_n)+'_R']
