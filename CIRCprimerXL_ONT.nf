@@ -65,7 +65,7 @@ process split_circRNAs {
 
 
 process get_seq {
-	maxForks 5 // this parameter is necessary as Entrez Bio only allows a limited nr of request per mail address in th get_circ_seq.py script
+	maxForks 1 // this parameter is necessary as Entrez Bio only allows a limited nr of request per mail address in th get_circ_seq.py script
 	input:
 	file ind_circ_file_handle from ind_circ_file.flatten()
 	val 'diff' from params.primer3_diff
