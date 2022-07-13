@@ -60,14 +60,14 @@ if circ_strand == "+":
                        rettype="fasta", 
                        strand=1, 
                        seq_start=start+30, 
-                       seq_stop=start+length-1)
+                       seq_stop=start+30+length-1)
 elif circ_strand == '-':
     handle = Entrez.efetch(db="nucleotide", 
                        id=chrom_GI, 
                        rettype="fasta", 
                        strand=2, 
                        seq_start=end-30, 
-                       seq_stop=end-length)
+                       seq_stop=end-30-length)
 else:
     raise SystemExit('{0} is not a valid strand for circ {1}'.format(circ_strand, circRNA))
 
