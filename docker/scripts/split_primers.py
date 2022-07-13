@@ -48,7 +48,7 @@ primer_extra.close()
 all_primers = open("all_primers_" + circ_ID + ".txt", 'w')
 all_primers_dict = {}
 
-# and simlyltaniously make bed file that can be used to annotate the circRNA
+# and simultaneously make bed file that can be used to annotate the circRNA
 bed_in = open('bed_in.txt', 'w')
 
 
