@@ -24,6 +24,7 @@ params.opt_gc = 50
 params.amp_min = 40
 params.amp_max = 1000
 params.temp_l = 250
+params.design = '5_prime'
 
 
 // change parameters to files
@@ -77,7 +78,7 @@ process get_seq {
 	path 'circ_info*' into circ_info
 
 	"""
-	get_circ_seq.py -n $length -i $ind_circ_file_handle -z $diff -p $nr -m 'marieke.vromman@ugent.be' -a $params.min_tm -b $params.max_tm -c $params.opt_tm -d $params.diff_tm -e $params.min_gc -f $params.max_gc -g $params.opt_gc -j $params.amp_min -k $params.amp_max
+	get_circ_seq.py -n $length -i $ind_circ_file_handle -z $diff -p $nr -m 'marieke.vromman@ugent.be' -a $params.min_tm -b $params.max_tm -c $params.opt_tm -d $params.diff_tm -e $params.min_gc -f $params.max_gc -g $params.opt_gc -j $params.amp_min -k $params.amp_max -l $params.design
 	"""
 }
 

@@ -22,6 +22,8 @@ parser.add_argument('-f', nargs=1, required=True, help='max GC')
 parser.add_argument('-g', nargs=1, required=True, help='opt GC')
 parser.add_argument('-j', nargs=1, required=True, help='min amp length')
 parser.add_argument('-k', nargs=1, required=True, help='max amp length')
+parser.add_argument('-l', nargs=1, required=True, help="design on 5' or 3' end")
+
 
 args = parser.parse_args()
 length = int(args.n[0])
@@ -49,28 +51,53 @@ circ_strand = circRNA.split()[4]
 # change chr nr to GI nr
 chrom_GI = chr_to_GI[chrom]
 
-# ## retrieve right side of BSJ
+# ## retrieve right or left side of BSJ
 
 from Bio import Entrez, SeqIO
 Entrez.email = "marieke.vromman@ugent.be"
 
-if circ_strand == "+":
-    handle = Entrez.efetch(db="nucleotide", 
-                       id=chrom_GI, 
-                       rettype="fasta", 
-                       strand=1, 
-                       seq_start=start+30, 
-                       seq_stop=start+30+length-1)
-elif circ_strand == '-':
-    handle = Entrez.efetch(db="nucleotide", 
-                       id=chrom_GI, 
-                       rettype="fasta", 
-                       strand=2, 
-                       seq_start=end-30, 
-                       seq_stop=end-30-length)
-else:
-    raise SystemExit('{0} is not a valid strand for circ {1}'.format(circ_strand, circRNA))
+# ### right side for 5 prime end (based on start pos)
+if args.l[0] == "5_prime": 
 
+    if circ_strand == "+":
+        handle = Entrez.efetch(db="nucleotide", 
+                        id=chrom_GI, 
+                        rettype="fasta", 
+                        strand=1, 
+                        seq_start=start+30, 
+                        seq_stop=start+30+length-1)
+    elif circ_strand == '-':
+        handle = Entrez.efetch(db="nucleotide", 
+                        id=chrom_GI, 
+                        rettype="fasta", 
+                        strand=2, 
+                        seq_start=end-30, 
+                        seq_stop=end-30-length)
+    else:
+        raise SystemExit('{0} is not a valid strand for circ {1}'.format(circ_strand, circRNA))
+
+# ### left side for 3 primer end (based on end pos)
+elif args.l[0] == "3_prime":
+
+    if circ_strand == "+":
+        handle = Entrez.efetch(db="nucleotide", 
+                        id=chrom_GI, 
+                        rettype="fasta", 
+                        strand=1, 
+                        seq_start=end-30-length-1, 
+                        seq_stop=end-30)
+    elif circ_strand == '-':
+        handle = Entrez.efetch(db="nucleotide", 
+                        id=chrom_GI, 
+                        rettype="fasta", 
+                        strand=2, 
+                        seq_start=start+30+length, 
+                        seq_stop=start+30)
+    else:
+        raise SystemExit('{0} is not a valid strand for circ {1}'.format(circ_strand, circRNA))
+        
+else:
+    raise SystemExit('{0} is not a valid design parameter. Valid options are 5_primer (defaul) or 3_prime'.format(args.l[0]))
 
 record_right = SeqIO.read(handle, "fasta")
 handle.close()
