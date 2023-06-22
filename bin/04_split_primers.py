@@ -13,8 +13,13 @@ import argparse
 
 parser = argparse.ArgumentParser(description='give arguments to main primer_xc script')
 parser.add_argument('-i', nargs=1, required=True, help='input primer file')
+parser.add_argument('-l', nargs=1, required=True, help="design on 5' or 3' end")
+parser.add_argument('-n', nargs=1, required=True, help='the nr of nucleotides surrounding the BSJ at each side', metavar='length')
+
+
 args = parser.parse_args()
 input_primers = args.i[0]
+length = int(args.n[0])
 
 primer_in = open(input_primers)
 
@@ -69,17 +74,65 @@ for primer_index in range(int(nr_p_out)):
 	FWD_RC = rev_comp(FWD)
 	REV_RC = rev_comp(REV)
 
+	## calculate positions of the primers on chromosome
+	# details
+		# for each calculation the empty space away from the BSJ needs to be taken into account: 30
+		# all with pos strand => use start pos
+		# all with neg strand => use end pos
+		# all with FWD => nothing extra
+		# all with REV => +1 (pos) or -1 (neg) as REV_pos is the last position of the primer (0-based)
+		# all 5_primer => use rules above
+		# all 3_primer => do opposite of rules above + take into account the template length to generate a 'new' start position
+
+
+	if args.l[0] == "5_prime": 
+		if strand == '+':
+
+			FWD_pos_start = int(start) + 30 + int(FWD_pos)
+			FWD_pos_end = int(start) + 30 + int(FWD_pos) + int(FWD_len)
+			REV_pos_start = int(start) + 30 + int(REV_pos) - int(REV_len) + 1
+			REV_pos_end = int(start) + 30 + int(REV_pos) + 1
+		
+		elif strand == '-':
+
+			FWD_pos_start = int(end) - 30 - int(FWD_pos) - int(FWD_len)
+			FWD_pos_end = int(end) - 30 - int(FWD_pos)
+			REV_pos_start = int(end) - 30 - int(REV_pos) - 1
+			REV_pos_end = int(end) - 30 - int(REV_pos) + int(REV_len) - 1
+
+	
+	elif args.l[0] == "3_prime":
+		if strand == '+':
+
+			FWD_pos_start = int(end) - length - 1 - 30 + int(FWD_pos) - 1
+			FWD_pos_end = int(end) - length - 1 - 30 + int(FWD_pos) + int(FWD_len) - 1
+			REV_pos_start = int(end) - length - 1 - 30 + int(REV_pos) - int(REV_len)
+			REV_pos_end = int(end) - length - 1 - 30 + int(REV_pos)
+
+		
+		elif strand == '-':
+
+			FWD_pos_start = int(start) + length + 30 - int(FWD_pos) - int(FWD_len) + 1
+			FWD_pos_end = int(start) + length + 30 - int(FWD_pos) + 1
+			REV_pos_start = int(start) + length + 30 - int(REV_pos)
+			REV_pos_end = int(start) + length + 30 - int(REV_pos) + int(REV_len)
+
+	FWD_pos_start = str(FWD_pos_start)
+	FWD_pos_end = str(FWD_pos_end)
+	REV_pos_start = str(REV_pos_start)
+	REV_pos_end = str(REV_pos_end)
+	primer_index = str(primer_index)
+
 	## make file for bedtools anno
 
 	# FWD primer
-	bed_in.write(chrom + "\t" + str(int(start)+30+int(FWD_pos)) + "\t" + str(int(start)+30+int(FWD_pos)+int(FWD_len)) + '\t'+ str(primer_index) + '_F' + '\t' + strand +'\n')
+	bed_in.write(chrom + "\t" + FWD_pos_start + "\t" + FWD_pos_end + '\t'+ primer_index + '_F' + '\t' + strand +'\n')
 	# REV primer
-	bed_in.write(chrom + "\t" + str(int(start)+30+int(REV_pos)-int(REV_len)) + "\t" + str(int(start)+30+int(REV_pos)) + '\t'+ str(primer_index) + '_R' + '\t' + strand + '\n')
-
+	bed_in.write(chrom + "\t" + REV_pos_start + "\t" + REV_pos_end + '\t'+ primer_index + '_R' + '\t' + strand + '\n')
 
 	# general primer file (for filtering), first put in dict, will be sorted (see below)
-	all_primers_dict[circ_ID + "\t" + chrom + "\t" + start + "\t" + end + '\t' + strand + '\t' + str(primer_index) + '\t' + FWD + '\t' + FWD_RC + '\t' + REV + '\t' + 
-	REV_RC + '\t' + FWD_pos + '\t' + FWD_len + '\t' + REV_pos +'\t' + REV_len + '\t' + PRIMER_LEFT_TM + '\t' + PRIMER_RIGHT_TM + '\t' + 
+	all_primers_dict[circ_ID + "\t" + chrom + "\t" + start + "\t" + end + '\t' + strand + '\t' + primer_index + '\t' + FWD + '\t' + FWD_RC + '\t' + REV + '\t' + 
+	REV_RC + '\t' + FWD_pos + '\t' + FWD_len + '\t' + FWD_pos_start + '\t' + FWD_pos_end + '\t' + REV_pos +'\t' + REV_len + '\t' + REV_pos_start + '\t' + REV_pos_end + '\t' + PRIMER_LEFT_TM + '\t' + PRIMER_RIGHT_TM + '\t' + 
 	PRIMER_LEFT_GC_PERCENT + '\t' + PRIMER_RIGHT_GC_PERCENT + '\t' + amplicon + '\t' + '\n'] = len(amplicon)
 
 

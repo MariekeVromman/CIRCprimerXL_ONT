@@ -93,6 +93,7 @@ process get_primers {
 	path 'primer_settings_handle' from params.primer_settings
 	path 'circ_info' from circ_info
 	file 'exons_bed' from exons
+	val 'length' from params.temp_l
  
 	output:
 	path 'all_primers_circ*' into all_primers_per_circ
@@ -104,7 +105,7 @@ process get_primers {
 
 	"""
 	/bin/primer3-2.5.0/src/primer3_core --output=output_primer3.txt --p3_settings_file=$primer_settings_handle $in_primer3_handle
-	04_split_primers.py -i output_primer3.txt
+	04_split_primers.py -i output_primer3.txt -l $params.design -n $length
 	bedtools sort -i bed_in.txt > bed_in_sorted.txt
 	bedtools closest -d -t first -a bed_in_sorted.txt -b $exons_bed > out_anno.txt
 	mkdir all_primers 
@@ -128,7 +129,7 @@ process print_output {
 	"""
 	mkdir all_primers
 	cp all_primer_files*/* all_primers/
-	echo "circ_ID	chr	start	end	strand	primer_ID	FWD_primer	FWD_rc	REV_primer	REV_rc	FWD_pos	FWD_length	REV_pos	REV_length	FWD_Tm	REV_Tm	FWD_GC	REV_GC	amplicon	FWD_type	REV_type	BSJ_type	same_primers	same_BSJ" > filtered_primers.txt
+	echo "circ_ID	chr	start	end	strand	primer_ID	FWD_primer	FWD_rc	REV_primer	REV_rc	FWD_pos	FWD_length	FWD_pos_start	FWD_pos_end	REV_pos	REV_length	REV_pos_start	REV_pos_end	FWD_Tm	REV_Tm	FWD_GC	REV_GC	amplicon	FWD_type	REV_type	BSJ_type	same_primers	same_BSJ" > filtered_primers.txt
 	cat results_per_circ* >> filtered_primers.txt
 	06_make_summary.py
 	"""
