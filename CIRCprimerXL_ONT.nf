@@ -6,10 +6,6 @@ params.primer_settings = "$baseDir/assets/primer3plus_settings.txt"
 params.chrom_file = "$baseDir/assets/GRCh38/chrom_sizes_GRCh38.txt"
 params.input_bed = "example/path"
 params.exons = "$baseDir/assets/GRCh38/Homo_sapiens.GRCh38.103.exons.sorted.bed"
-params.index_fasta = "$baseDir/assets/GRCh38/index_fastahack"
-params.index_fasta_name = "GRCh38.dna.primary_assembly.fa"
-params.index_bowtie = "$baseDir/assets/GRCh38/index_bowtie"
-params.index_bowtie_name = "GRCh38_dna"
 
 
 params.primer3_diff = 1
